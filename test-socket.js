@@ -1,7 +1,7 @@
 const { io } = require('socket.io-client');
 
 
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZWI4YTJkODJkOTk5MDc3MjliMjk1MCIsImVtYWlsIjoiZXNoYW50QG5pdGpzci5hYy5pbiIsImlhdCI6MTc5MzgyODQyOCwiZXhwIjoxNzkzOTE0ODI4fQ.5cLRkja1DUZw5PSE_Qg-hVUmlHZ9MUx9odj1oO5K1Mg';
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZWI5ZDNkOTIzYWE4M2FmYThmZTc1ZSIsImVtYWlsIjoiYXl1c2hAbml0anNyLmFjLmluIiwiaWF0IjoxNzkzODI4OTk3LCJleHAiOjE3OTM5MTUzOTd9.XTxWiLR4y2MxGCVf6d8NzsnbwjWzAiBeHIBvQqUD_U4';
 
 
 

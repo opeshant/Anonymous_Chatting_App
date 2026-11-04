@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const User = require('../models/user.model');
 const Chat = require('../models/chat.model');
+const Message = require('../models/message.model');
+
 
 const activeUsers = new Map();
 const waitingQueue = [];
@@ -62,7 +64,7 @@ const initializeSocket = (io) => {
 
 
         // Handle messages
-        socket.on('send_message', (data) => {
+        socket.on('send_message', async (data) => {
 
             try {
 
@@ -101,12 +103,20 @@ const initializeSocket = (io) => {
 
                 }
 
-                // Prepare message
-                const messageData = {
-                    senderId: userId,
+                // Save message in MongoDB
+                const savedMessage = await Message.create({
                     chatId: match.chatId,
-                    message: message,
-                    sentAt: new Date()
+                    senderId: userId,
+                    message: message
+                });
+
+                // Prepare message data
+                const messageData = {
+                    _id: savedMessage._id,
+                    chatId: savedMessage.chatId,
+                    senderId: userId,
+                    message: savedMessage.message,
+                    sentAt: savedMessage.sentAt
                 };
 
                 // Send message to partner
