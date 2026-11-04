@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 
 const connectDB = require('./config/db.config');
 const authRoutes = require('./routes/auth.routes');
+const authMiddleware = require('./middlewares/auth.middleware');
 
 dotenv.config();
 
@@ -18,6 +19,19 @@ authRoutes(app); // invoking
 app.get('/home', (req, res) => {
     res.status(200).send('College Chat Backend is running!');
 });
+
+app.get('/api/v1/auth/protected', authMiddleware.isAuthenticated, (req, res) => {
+
+    return res.status(200).send({
+        message: 'You have accessed a protected route successfully',
+        data: {
+            name: req.user.name,
+            email: req.user.email
+        }
+    });
+
+});
+
 
 const PORT = process.env.PORT || 3000;
 
