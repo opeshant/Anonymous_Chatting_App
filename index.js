@@ -1,3 +1,4 @@
+
 const express = require('express');
 const dotenv = require('dotenv');
 const http = require('http');
@@ -9,6 +10,7 @@ const authRoutes = require('./routes/auth.routes');
 const userRoutes = require('./routes/user.routes');
 const ChatRoutes = require('./routes/chat.routes');
 
+const { apiLimiter } = require('./middlewares/rateLimiter');
 
 const initializeSocket = require('./sockets/socket');
 
@@ -18,6 +20,10 @@ const app = express();
 
 app.use(express.json());
 
+// Apply general API rate limiter
+app.use(apiLimiter);
+
+// Register routes
 authRoutes(app);
 userRoutes(app);
 ChatRoutes(app);
