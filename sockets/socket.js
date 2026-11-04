@@ -42,6 +42,73 @@ const initializeSocket = (io) => {
     // Handle connection
     io.on('connection', async (socket) => {
 
+        // Handle messages
+socket.on('send_message', (data) => {
+
+    try {
+
+        const userId = socket.user._id.toString();
+
+        // Check whether user is matched
+        const match = matchedUsers.get(userId);
+
+        if(!match || !socket.data.roomId ||
+           match.roomId !== socket.data.roomId) {
+
+            return socket.emit('message_error', {
+                message: 'You are not currently connected to a partner'
+            });
+
+        }
+
+        // Validate message
+        if(!data.message || typeof data.message !== 'string' ||
+           !data.message.trim()) {
+
+            return socket.emit('message_error', {
+                message: 'Message cannot be empty'
+            });
+
+        }
+
+        const message = data.message.trim();
+
+        if(message.length > 1000) {
+
+            return socket.emit('message_error', {
+                message: 'Message cannot exceed 1000 characters'
+            });
+
+        }
+
+        // Prepare message
+        const messageData = {
+            senderId: userId,
+            message: message,
+            sentAt: new Date()
+        };
+
+        // Send message to partner
+        socket.to(match.roomId).emit('receive_message', messageData);
+
+        // Confirm message to sender
+        socket.emit('message_sent', messageData);
+
+        console.log(`${socket.user.name}: ${message}`);
+
+    }
+    catch(error) {
+
+        console.log('Message error:', error.message);
+
+        socket.emit('message_error', {
+            message: 'Unable to send message'
+        });
+
+    }
+
+});
+
         const userId = socket.user._id.toString();
 
         console.log(`${socket.user.name} connected`);
@@ -128,12 +195,19 @@ const initializeSocket = (io) => {
 
             }
 
+                 
+             // Create private room
+             const roomId = crypto.randomUUID();
 
-            // Create private room
-            const roomId = crypto.randomUUID();
 
-            socket.join(roomId);
-            partnerSocket.join(roomId);
+             socket.join(roomId);
+             partnerSocket.join(roomId);
+
+             socket.data.roomId = roomId;
+             partnerSocket.data.roomId = roomId;
+
+
+           
 
 
             // Store matching information

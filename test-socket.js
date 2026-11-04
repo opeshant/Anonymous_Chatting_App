@@ -1,6 +1,11 @@
 const { io } = require('socket.io-client');
 
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZWI4YTJkODJkOTk5MDc3MjliMjk1MCIsImVtYWlsIjoiZXNoYW50QG5pdGpzci5hYy5pbiIsImlhdCI6MTc5MzgyNjQ5NCwiZXhwIjoxNzkzOTEyODk0fQ.CM7sta5n6i0yBZNv8_wTsVaOtAu8sz629Y_M4uw4-f0';
+
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZWI4YTJkODJkOTk5MDc3MjliMjk1MCIsImVtYWlsIjoiZXNoYW50QG5pdGpzci5hYy5pbiIsImlhdCI6MTc5MzgyNzMzNiwiZXhwIjoxNzkzOTEzNzM2fQ.JmXPAl6sXPYveumym6I3iyThRqjpZtKvbRbetTFb5ig';
+
+
+
+const shouldSendMessage = process.argv[2] === 'send';
 
 const socket = io('http://localhost:3000', {
     auth: {
@@ -28,11 +33,34 @@ socket.on('match_found', (data) => {
     console.log('Room ID:', data.roomId);
     console.log('Partner:', data.partner);
 
+    if(shouldSendMessage) {
+
+        socket.emit('send_message', {
+            message: 'Hey! How are you?'
+        });
+
+    }
+
 });
 
-socket.on('match_error', (data) => {
+socket.on('receive_message', (data) => {
 
-    console.log('Matching error:', data.message);
+    console.log('\nNEW MESSAGE RECEIVED!');
+    console.log('Sender:', data.senderId);
+    console.log('Message:', data.message);
+
+});
+
+socket.on('message_sent', (data) => {
+
+    console.log('\nMESSAGE SENT SUCCESSFULLY!');
+    console.log(data.message);
+
+});
+
+socket.on('message_error', (data) => {
+
+    console.log('Message error:', data.message);
 
 });
 
