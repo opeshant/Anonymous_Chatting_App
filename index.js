@@ -7,6 +7,8 @@ const connectDB = require('./config/db.config');
 
 const authRoutes = require('./routes/auth.routes');
 const userRoutes = require('./routes/user.routes');
+const ChatRoutes = require('./routes/chat.routes');
+
 
 const initializeSocket = require('./sockets/socket');
 
@@ -18,6 +20,7 @@ app.use(express.json());
 
 authRoutes(app);
 userRoutes(app);
+ChatRoutes(app);
 
 app.get('/home', (req, res) => {
     res.status(200).send('College Chat Backend is running!');
