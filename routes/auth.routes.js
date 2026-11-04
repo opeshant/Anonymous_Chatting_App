@@ -7,6 +7,8 @@ module.exports = (app) => {
          authController.signup
         );
 
-    
+     app.post('/api/v1/auth/signin',
+         authController.signin
+        );
 
 };

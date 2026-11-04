@@ -25,6 +25,33 @@ const signup = async (req, res) => {
 
 };
 
+const signin = async (req, res) => {
+
+    try {
+
+        const result = await authService.signin(req.body);
+
+        return res.status(200).send({
+            message: 'Login successful',
+            data: {
+                name: result.user.name,
+                email: result.user.email,
+                token: result.token
+            }
+        });
+
+    }
+    catch(error) {
+
+        return res.status(error.statusCode || 500).send({
+            message: error.message || 'Internal server error'
+        });
+
+    }
+
+};
+
 module.exports = {
-    signup
+    signup,
+    signin
 };
