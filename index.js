@@ -2,12 +2,18 @@ const express = require('express');
 const dotenv = require('dotenv');
 
 const connectDB = require('./config/db.config');
+const authRoutes = require('./routes/auth.routes');
 
 dotenv.config();
 
 const app = express();
 
 app.use(express.json());
+app.use(express.json());
+
+
+authRoutes(app); // invoking 
+
 
 app.get('/home', (req, res) => {
     res.status(200).send('College Chat Backend is running!');
