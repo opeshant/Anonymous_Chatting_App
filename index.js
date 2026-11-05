@@ -2,7 +2,10 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const http = require('http');
+const cors = require('cors');
 const { Server } = require('socket.io');
+
+dotenv.config();
 
 const connectDB = require('./config/db.config');
 
@@ -14,9 +17,18 @@ const { apiLimiter } = require('./middlewares/rateLimiter');
 
 const initializeSocket = require('./sockets/socket');
 
-dotenv.config();
-
 const app = express();
+
+// Trust Render's reverse proxy
+app.set('trust proxy', 1);
+
+// Allow frontend to communicate with backend
+app.use(cors({
+    origin: [
+        'http://localhost:5173',
+        'https://campusconnect-frontend-black.vercel.app'
+    ]
+}));
 
 app.use(express.json());
 
@@ -36,7 +48,11 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: '*'
+        origin: [
+            'http://localhost:5173',
+            'https://campusconnect-frontend-black.vercel.app'
+        ],
+        methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE']
     }
 });
 
